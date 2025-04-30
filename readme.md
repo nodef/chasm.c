@@ -46,6 +46,7 @@ This library is useful for any code generated dynamically from user input. This 
 - Runtime optimizations / code generation
 - Testing / benchmarking software
 - Writing your own assemblers!
+- Inserting dynamic code into running processes and such
 
 I would highly recommend using something like [`example/vec.h`](example/vec.h) (Arena library) to dynamically push code onto a single array throughout your application with very low latency. I show this off in [`example/bf_compiler.c`](example/bf_compiler.c)!
 
@@ -58,7 +59,7 @@ Assembler is built in an optimized fashion where anything that can be precompute
 
 In the above screenshot, it's shown that an optimized build can assemble most instructions in about 15 nanoseconds, which goes down to 30 for unoptimized builds.
 
-Considering an average of 9 nanoseconds per function call, most of that 15 ns is actually wasted on function call overhead!
+This equates to about 100MB of code produced per second on my machine, with 1 core!
 
 API: Code
 ---------
@@ -138,8 +139,10 @@ API: Functions
 #### Assembles and soft links code, dealing with `$riprel` and `rel()` syntax and returning the assembled code.
 
 - Returns NULL if an error occured, retrieved with `x64error()`.
+  - Validates `code`, `len` and `outlen` for NULL pointers or 0s, ensuring your errors don't cause mayhem too!
 - The length of the assembled code is stored in `outlen`.
 - Internally allocates returned code, freed with `free()`.
+- If you happen to input more than a billion instructions into this function, the internal linking is performed using 32 bit integers holding instruction boundaries. There is a chance to overflow in this case!
 
 ### <pre lang="c">uint32_t x64emit(const x64Ins* ins, uint8_t* opcode_dest);</pre>
 
