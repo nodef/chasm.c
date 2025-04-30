@@ -142,7 +142,7 @@ API: Functions
   - Validates `code`, `len` and `outlen` for NULL pointers or 0s, ensuring your errors don't cause mayhem too!
 - The length of the assembled code is stored in `outlen`.
 - Internally allocates returned code, freed with `free()`.
-- If you happen to input more than a billion instructions into this function, the internal linking is performed using 32 bit integers holding instruction boundaries. There is a chance to overflow in this case!
+- If you happen to input more than a billion instructions into this function, the internal linking is performed using 32 bit integers holding instruction boundaries, so watch out for x64 internal overflows.
 
 ### <pre lang="c">uint32_t x64emit(const x64Ins* ins, uint8_t* opcode_dest);</pre>
 
@@ -150,27 +150,7 @@ API: Functions
 
 - Returns the length of the instruction in bytes. If it returns 0, an error has occurred.
 - `opcode_dest` needs to be a buffer of at least 15 bytes to accomodate any/all x86 instructions.
-- This function does not perform any linking, so in the case of there being no relative references in your code, it's likely much faster to loop with this function than to use `x64as()`.
-
-Example of such loop:
-
-```c
-char buf[128];
-uint32_t buf_len = 0;
-
-for(size_t i = 0; i < sizeof(code) / sizeof(code[0]); i++) {
-  const uint32_t len = x64emit(&code[i], buf + buf_len);
-  
-  if(!len) {
-    fprintf(stderr, "%s", x64error(NULL));
-    return 1;
-  }
-  
-  buf_len += len;
-}
-```
-
-A loop similar to this is used internally in `x64as()`!
+- This function does not perform any linking, so in the case of there being no relative references in your code, it's slightly (10% max) faster to loop with this function than to use `x64as()`.
 
 ### <pre lang="c">void (*x64exec(void* mem, uint32_t size))();</pre>
 
