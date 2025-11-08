@@ -76,7 +76,7 @@ x64Ins* bf_compile(char* in) {
 			rax_garbled = true;
 			vpusharr(ret, {
 				{ MOV, rax, mem($rbp, -8) },
-				{ MOV, rcx, mem($rax) },
+				{ MOV, arg1, mem($rax) },
 				{ SUB, rsp, imm(64) }, // Should investigate aligining the stack to 16 bytes but this works for now(what msvc does).
 				{ MOV, rax, imptr(putchar) },
 				{ CALL, rax },
