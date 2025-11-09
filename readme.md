@@ -1,6 +1,6 @@
 <div align="center">
   <h1>chasm</h1>
-  <p>Easy to use, extremely fast Runtime Assembler.</p>
+  <p>Easy to use, extremely fast Runtime Assembler, by <a href="https://github.com/aqilc">Aqil Contractor</a>.</p>
 </div>
 
 ```c
@@ -25,6 +25,29 @@ int main() {
 ```
 
 > Download [`asm_x64.c`](asm_x64.c) and [`asm_x64.h`](asm_x64.h) into your project and just include [`asm_x64.h`](asm_x64.h) to start assembling!
+
+Installation
+------------
+
+Run:
+```bash
+$ npm i chasm.c
+```
+
+And then include `asm_x64.h` as follows:
+```c
+#include "node_modules/chasm.c/asm_x64.h"
+```
+
+You may also want to include `asm_x64.c` as follows:
+```c
+#ifndef __CHASM_C__
+#define __CHASM_C__
+#include "node_modules/chasm.c/asm_x64.c"
+#endif
+```
+
+This will include both the function declaration and their definitions into a single file.
 
 Features
 --------
@@ -222,3 +245,10 @@ FAQ
 ### Where is the full source for all scripts and tests shown?
 
 > All source is in [aqilc/rustscript](https://github.com/aqilc/rustscript/tree/main/lib/asm). Tests testing all the features and operands are [here](https://github.com/aqilc/rustscript/blob/main/tests/asm.c).
+
+<br>
+<br>
+
+
+[![ORG](https://img.shields.io/badge/org-nodef-green?logo=Org)](https://nodef.github.io)
+![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/chasm.c)
