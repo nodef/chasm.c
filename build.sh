@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-URL="https://excellmedia.dl.sourceforge.net/project/asio/asio/1.36.0%20%28Stable%29/boost_asio_1_36_0.zip?viasf=1"
+# Fetch the latest version of the library
+fetch() {
+if [ -d "chasm" ]; then return; fi
+URL="https://github.com/aqilc/chasm/archive/refs/heads/main.zip"
 ZIP="${URL##*/}"
-ZIP="${ZIP%%\?*}"
-DIR="${ZIP%.zip}"
+DIR="chasm-main"
 mkdir -p .build
 cd .build
 
@@ -22,10 +24,26 @@ if [ ! -d "$DIR" ]; then
   mv "$ZIP.bak" "$ZIP"
   echo ""
 fi
+cd ..
 
 # Copy the libs to the package directory
-echo "Copying libs to boost/ ..."
-rm -rf ../boost
-mkdir -p ../boost
-cp -rf "$DIR/boost"/* ../boost/
+echo "Copying libs to chasm/ ..."
+rm -rf chasm
+mkdir -p chasm
+cp -f ".build/$DIR/asm_x64.h" "chasm/asm_x64.h"
+cp -f ".build/$DIR/asm_x64.c" "chasm/asm_x64.c"
 echo ""
+}
+
+
+# Test the project
+test() {
+echo "Running 01-hello-world.c ..."
+clang -I. -o 01.exe examples/01-hello-world.c && ./01 && echo -e "\n"
+}
+
+
+# Main script
+if [[ "$1" == "test" ]]; then test
+elif [[ "$1" == "fetch" ]]; then fetch
+else echo "Usage: $0 {fetch|test}"; fi

@@ -1,6 +1,6 @@
 {
   "name": "chasm.c",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Chasm Runtime Assembler; Aqil Contractor (2025).",
   "keywords": [
     "c",
@@ -18,5 +18,9 @@
     "url": "git+https://github.com/nodef/chasm.c.git"
   },
   "license": "MIT",
-  "main": "chasm.h"
+  "author": "wolfram77@gmail.com",
+  "main": "chasm.h",
+  "scripts": {
+    "test": "bash build.sh test"
+  }
 }

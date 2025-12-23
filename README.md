@@ -5,7 +5,8 @@
 
 ```c
 #include <stdio.h>
-#include "asm_x64.h"
+#include <chasm.h>
+
 
 int main() {
   char* str = "Hello World!";
@@ -24,30 +25,52 @@ int main() {
 }
 ```
 
-> Download [`asm_x64.c`](asm_x64.c) and [`asm_x64.h`](asm_x64.h) into your project and just include [`asm_x64.h`](asm_x64.h) to start assembling!
+<!-- > Download [`asm_x64.c`](asm_x64.c) and [`asm_x64.h`](asm_x64.h) into your project and just include [`asm_x64.h`](asm_x64.h) to start assembling! -->
+
+<br>
 
 Installation
 ------------
 
 Run:
-```bash
+
+```sh
 $ npm i chasm.c
 ```
 
-And then include `asm_x64.h` as follows:
+And then include `chasm.h` as follows:
+
 ```c
-#include "node_modules/chasm.c/asm_x64.h"
+// main.c
+#include "node_modules/chasm.c/chasm.h"
+
+int main() { /* ... */ }
 ```
 
-You may also want to include `asm_x64.c` as follows:
-```c
-#ifndef __CHASM_C__
-#define __CHASM_C__
-#include "node_modules/chasm.c/asm_x64.c"
-#endif
+And then compile with `clang` or `gcc` as usual.
+
+```bash
+$ clang main.c  # or, use gcc
+$ gcc   main.c
 ```
 
-This will include both the function declaration and their definitions into a single file.
+You may also use a simpler approach:
+
+```c
+// main.c
+#include <chasm.h>
+
+int main() { /* ... */ }
+```
+
+If you add the path `node_modules/chasm.c` to your compiler's include paths.
+
+```bash
+$ clang -I./node_modules/chasm.c main.c  # or, use gcc
+$ gcc   -I./node_modules/chasm.c main.c
+```
+
+<br>
 
 Features
 --------
@@ -58,6 +81,8 @@ Features
 - Easy and flexible syntax, allowing you as much freedom as possible with coding practices.
 - Simple and consistent error handling system, returning 0 on failure and fast error retrieval with `x64error(NULL)`.
 - Stringification of the IR for easy debugging with `x64stringify(code, len)`.
+
+<br>
 
 Use Cases
 ---------
@@ -71,7 +96,9 @@ This library is useful for any code generated dynamically from user input. This 
 - Writing your own assemblers!
 - Inserting dynamic code into running processes and such
 
-I would highly recommend using something like [`example/vec.h`](example/vec.h) (Arena library) to dynamically push code onto a single array throughout your application with very low latency. I show this off in [`example/bf_compiler.c`](example/bf_compiler.c)!
+I would highly recommend using something like [`example/vec.h`](https://github.com/aqilc/chasm/tree/main/example/vec.h) (Arena library) to dynamically push code onto a single array throughout your application with very low latency. I show this off in [`example/bf_compiler.c`](https://github.com/aqilc/chasm/tree/main/example/bf_compiler.c)!
+
+<br>
 
 Performance
 -----------
@@ -84,10 +111,12 @@ In the above screenshot, it's shown that an optimized build can assemble most in
 
 This equates to about 100MB of code produced per second on my machine, with 1 core!
 
+<br>
+
 API: Code
 ---------
 
-`x64` is an array of `x64Ins` structs. The first member of the struct is `op`, or the operation, an enum defined by the **[`asm_x64.h`](asm_x64.h)** header. The other 4 members are `x64Operand` structs, which are just a combination of the type of operand with the value.
+`x64` is an array of `x64Ins` structs. The first member of the struct is `op`, or the operation, an enum defined by the **[`asm_x64.h`](chasm/asm_x64.h)** header. The other 4 members are `x64Operand` structs, which are just a combination of the type of operand with the value.
 
 An example instruction `mov rax, 0` would be written as:
 
@@ -148,11 +177,12 @@ x64 code = {
 
 Simply, the number supplied is used to reference that many instructions ahead of the current instruction. `0` means the current instruction. `{ JMP, rel(0) }` would halt the processor, so be careful.
 
-More examples in [`example/bf_compiler.c`](example/bf_compiler.c).
+More examples in [`example/bf_compiler.c`](https://github.com/aqilc/chasm/tree/main/example/bf_compiler.c).
 
 > [!Important]
 > To get actual results with this syntax, you need to link your code with `x64as()`!
 
+<br>
 
 API: Functions
 --------------
@@ -203,6 +233,7 @@ API: Functions
 - Returns a string with a description of the error.
 - If `errcode` is not NULL, it will be set to the error code.
 
+<br>
 
 Limitations
 -----------
@@ -215,9 +246,11 @@ Limitations
 
 If people seem to need support for any of these limitations, I will try my best to add them! In my personal use, I haven't needed them so I haven't gone through the effort.
 
-I have tried very hard to add labels, and nothing seems to be elegant. I'm open to it if someone can draft a good plan for it! My goal is to support it fully without limiting strings to string literals only, if I were to support it at all. You can still see remnants of previous attempts in [`asm_x64.c`](asm_x64.c).
+I have tried very hard to add labels, and nothing seems to be elegant. I'm open to it if someone can draft a good plan for it! My goal is to support it fully without limiting strings to string literals only, if I were to support it at all. You can still see remnants of previous attempts in [`asm_x64.c`](chasm/asm_x64.c).
 
 Also, support for other instruction sets will come when I get to them, and I when get some good tables that give me the exact information I need! I currently use a modified table from [StanfordPL/x64asm](https://github.com/StanfordPL/x64asm). Their table has some incorrect instructions, so I wouldn't suggest using that one for your own projects.
+
+<br>
 
 License
 -------
@@ -250,6 +283,6 @@ FAQ
 <br>
 
 
+[![SRC](https://img.shields.io/badge/src-repo-green?logo=Org)](https://github.com/aqilc/chasm)
 [![ORG](https://img.shields.io/badge/org-nodef-green?logo=Org)](https://nodef.github.io)
 ![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/chasm.c)
-[![SRC](https://img.shields.io/badge/src-repo-green?logo=Org)](https://github.com/aqilc/chasm)
